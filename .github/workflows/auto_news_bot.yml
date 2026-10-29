@@ -6,12 +6,17 @@ on:
     - cron: '0 */2 * * *'
   workflow_dispatch: # Allows manual trigger from GitHub UI
 
+permissions:
+  contents: write
+
 jobs:
   run-news-agent:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: true
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -38,5 +43,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add processed_news.db
-          git diff --quiet && git diff --staged --quiet || (git commit -m "chore: update processed news database [skip ci]" && git push)
+          git add processed_news.db || true
+          if [ -f processed_news.db ]; then
+            git diff --staged --quiet || (git commit -m "chore: update processed news database [skip ci]" && git push)
+          fi

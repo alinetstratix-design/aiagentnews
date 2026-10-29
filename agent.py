@@ -246,13 +246,20 @@ def run_agent():
     print(f"Post Status: {config.POST_STATUS}")
     print("=" * 60)
 
+    import sys
+
+    print(f"WP_URL: {config.WP_URL}")
+    print(f"WP_USERNAME: {'Set (' + config.WP_USERNAME + ')' if config.WP_USERNAME else 'MISSING'}")
+    print(f"WP_APP_PASSWORD: {'Set (Length: ' + str(len(config.WP_APP_PASSWORD)) + ')' if config.WP_APP_PASSWORD else 'MISSING'}")
+    print(f"GEMINI_API_KEY: {'Set (Length: ' + str(len(config.GEMINI_API_KEY)) + ')' if config.GEMINI_API_KEY else 'MISSING'}")
+
     if not config.WP_USERNAME or not config.WP_APP_PASSWORD:
-        print("[!] Please configure WP_USERNAME and WP_APP_PASSWORD in your .env file.")
-        return
+        print("[!] ERROR: WP_USERNAME or WP_APP_PASSWORD secret is missing in GitHub Repository Secrets!")
+        sys.exit(1)
 
     if not config.GEMINI_API_KEY:
-        print("[!] Please configure GEMINI_API_KEY in your .env file.")
-        return
+        print("[!] ERROR: GEMINI_API_KEY secret is missing in GitHub Repository Secrets!")
+        sys.exit(1)
 
     articles_published_this_run = 0
 
